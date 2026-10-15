@@ -17,8 +17,8 @@
 \usepackage{mas1004}
 
 \reporttitle{Assignment 1: Long report}
-\studentname{Your name}
-\studentid{Your student ID}
+\studentname{김서인}
+\studentid{20251121}
 
 \begin{document}
 \makeheader
@@ -27,23 +27,42 @@
 \section*{Problem 1. Categories and images}
 
 \subsection*{Why these categories}
-\fillin{Why these categories, and why you care about them.}
+I run the planning/design side of an IT club, so I spend a lot of time
+hunting for design references. Pinterest only groups images by mood, not by
+art style, so telling a pixel-art reference from a hand-drawn one from a
+vector one was something I always had to judge myself, one image at a time.
+I chose these three categories so that an automatic style classifier could do
+that judgement for me, and help me decide which references are actually
+useful before I open them.
 
 \subsection*{What I expected the model to use}
-\fillin{What you thought, before training, the model would use to tell them
-apart: shape, colour, texture, background, or something else.}
+Before training, I expected pixel art to be easy: the visible pixel grid
+(blocky, stair-stepped edges) is a texture that has nothing to do with the
+other two. I expected hand-drawn doodles and vector illustration to be the
+hard pair, told apart by how regular the outline is: smooth, uniform-width
+vector curves versus the shaky, uneven line weight of a hand-drawn line.
 
 \subsection*{Images per category}
-\fillin{How many images you got for each category.}
+150 images were downloaded for each of the three categories before any
+cleaning:
+\begin{itemize}
+  \item \texttt{ink\_drawing\_doodle\_sticker} (hand-drawn): 150
+  \item \texttt{cute\_pixel\_art\_sticker\_design} (pixel art): 150
+  \item \texttt{kawaii\_sticker\_vector\_sheet} (vector illustration): 150
+\end{itemize}
 
 % ---------------------------------------------------------------------------
 \section*{Problem 2. Preparing an image}
 
-\sidebyside{figures/prepare_original.jpg}{\fillin{the image as downloaded}}
-           {figures/prepare_result.png}{\fillin{what prepare\_image made of it}}
+\sidebyside{figures/prepare_original.jpg}{the image as downloaded (1920\,$\times$\,592)}
+           {figures/prepare_result.png}{what prepare\_image made of it (224\,$\times$\,224)}
 
-\fillin{What was cut off, and an image where the crop cut off part of the
-thing you care about.}
+This doodle sheet is 1920 by 592 pixels, more than three times wider than it
+is tall. Resizing the shorter side to 256 and cutting out the centre 224 by
+224 square throws away almost everything on the left and right: a rabbit face
+in the top-right corner and a bear face in the bottom-left corner are both
+completely cut out of what the model actually sees, even though they are
+clearly part of the sheet.
 
 % ---------------------------------------------------------------------------
 \section*{Problem 3. First training runs}
@@ -53,110 +72,252 @@ thing you care about.}
 \toprule
 tag & start & trained & epochs & lr & trainable parameters & train acc. & test acc. \\
 \midrule
-\multicolumn{8}{l}{\fillin{one row per run, as run.py printed it}} \\
+run     & ImageNet & all layers  & 10 & 0.0001 & 11,178,051 & 99.4\%  & 93.3\% \\
+scratch & random   & all layers  & 10 & 0.0001 & 11,178,051 & 100.0\% & 74.4\% \\
+frozen  & ImageNet & last layer  & 10 & 0.001  & 1,539      & 91.7\%  & 90.0\% \\
+short   & ImageNet & all layers  & 5  & 0.0001 & 11,178,051 & 100.0\% & 94.4\% \\
 \bottomrule
 \end{tabular}
 \end{center}
 
 \picturefile{figures/run_curves.png}
 
-\fillin{Did the loss go down? Did it keep going down, or flatten out?}
+The training loss drops sharply for the first 2--3 epochs and then flattens
+out near zero. The test loss follows it down for about 3 epochs, bottoms out
+around epoch 3 (0.151), and then slowly climbs back up to 0.259 by epoch 10
+even though the training loss keeps falling -- a textbook overfitting curve.
 
-\fillin{The gap between train and test accuracy, and what it means.}
+Train accuracy (99.4\%) is 6.1 points higher than test accuracy (93.3\%) on
+the \texttt{run} setting. The model has nearly memorised the training images
+by the end of training, so the gap is the model fitting quirks of the
+training images that do not generalise, not real extra ability.
 
 \begin{center}\picturefile[0.5\linewidth]{figures/run_confusion.png}\end{center}
 
-\fillin{Which two categories it mixes up most, and whether that surprised you.}
+The two categories it mixes up most are hand-drawn doodle and vector
+illustration: 5 of the 30 hand-drawn test images were called vector, while
+pixel art was never confused with either of the other two (30/30 correct).
+This did not surprise me -- it is exactly the pair I expected to be hardest,
+since both styles can have fairly clean line art once a hand-drawn sketch
+happens to be inked neatly.
 
-\fillin{How far apart the test accuracies are, starting from ImageNet and from
-random numbers, and why you think that is.}
+Starting from ImageNet reached 93.3\% test accuracy; starting from random
+numbers reached 74.4\% -- 19 points apart, with everything else (images,
+code, epochs) identical. I think this is because the ImageNet weights
+already encode general-purpose edge, shape and texture detectors from 1.2
+million photographs, so the network only has to learn how those relate to
+our three sticker styles, instead of learning to see at all from scratch.
 
-\fillin{How close training only the last layer gets to training all of them.}
+Training only the last layer changes 1,539 parameters, about 0.0138\% of the
+11,178,051 total. It still reached 90.0\% test accuracy, only 3.3 points
+behind training every parameter (93.3\%) -- surprisingly close, given how
+tiny a fraction of the network it is allowed to touch.
 
 \subsection*{Output of the runs}
 \outputfile{outputs/run_output.txt}
 \outputfile{outputs/scratch_output.txt}
 \outputfile{outputs/frozen_output.txt}
-% One more line like these for the setting you chose, named by its tag.
-\fillin{the output of the run with your own setting}
+\outputfile{outputs/short_output.txt}
 
 % ---------------------------------------------------------------------------
 \section*{Problem 4. Cleaning}
 
 \subsection*{My rule}
-\fillin{Your rule, in one or two sentences, as you wrote it before you
-started.}
+Common rule, applied to all three categories: remove any image that is a
+real-life photo of a sticker (rather than the illustration itself), a
+screenshot of design software, or an ad/product-listing graphic where banner
+text, a price tag or a watermark takes up a large share of the picture.
+
+Per-category rule, on top of the common rule: for \emph{pixel art}, remove
+anything without a visible pixel grid (smooth curves or gradients instead).
+For \emph{hand-drawn}, remove anything with a uniform line weight and flat
+colour fill and no hand-drawn irregularity. For \emph{vector}, remove
+anything that instead looks like pixel art (visible grid) or like a hand-drawn
+doodle (uneven, sketchy line).
 
 \subsection*{Three kinds of junk}
-\fillin{Three kinds of junk, with one picture of each.}
 
-% For example: \picturefile[0.3\linewidth]{figures/junk_1.jpg}
+\begin{center}
+\picturefile[0.3\linewidth]{figures/junk_real_photo.jpg}\hfill
+\picturefile[0.3\linewidth]{figures/junk_ad_graphic.jpg}\hfill
+\picturefile[0.3\linewidth]{figures/junk_near_duplicate.jpg}
+\end{center}
+
+Left to right: a real photo of a hand holding a physical sticker sheet
+(common-rule violation, not the illustration itself); a product-listing
+graphic with a ruler, size labels and a logo wrapped around the actual
+stickers (common-rule violation, mostly ad text); and one half of a
+near-duplicate pair, the same sticker sheet photographed/re-saved twice.
 
 \subsection*{What I removed}
 \outputfile{outputs/clean_count.txt}
 
-\fillin{How many near copies it found, and what you did with them.}
+\texttt{clean.py suspects} found 67 pairs of near copies (similarity above
+0.95). Several images were near-copies of more than one other image at once,
+so the 67 pairs collapse into 44 groups once images that are copies of each
+other are merged together; keeping only one image per group removed 55
+files.
 
-\fillin{Of the first 20 suspects in each class, how many you removed. Whether
-the suspects included junk you had missed, and whether you found junk it did
-not list.}
+Looking at the top 20 suspects (the 20 images in each class that look least
+like the rest of the class) by my rule: I removed 6/20 in pixel art, 5/20 in
+hand-drawn, and 7/20 in vector. Several of these were junk I had not
+separately flagged when I first looked through the sheets in Step 3 (small
+real-photo and ad-banner images are easy to miss among 150 thumbnails), so
+the suspect list genuinely caught things I had missed. On the other hand,
+most of what I actually removed -- the 55 near-duplicate images -- came from
+the separate \texttt{copies.png} list, not from the "looks least like its own
+class" suspect ranking, so the suspect ranking alone would have missed the
+single largest source of junk in this dataset.
 
 \subsection*{Before and after cleaning}
 \outputfile{outputs/compare.txt}
 
-\fillin{The test accuracy and the accuracy on your new images, before and
-after. If a number went down, why you think it did.}
+On the (different, smaller) downloaded test set, test accuracy went down
+slightly after cleaning: 93.3\% (\texttt{run}) to 90.7\% (\texttt{clean}).
+That is not the fair comparison, though, since cleaning changes which images
+are in the test set. On the new-source images, which did not change, accuracy
+stayed exactly the same before and after cleaning: 47.4\% (9/19) both times.
+So cleaning mainly removed noise and near-duplicates that were making the
+model's own, now-smaller test set easier -- it neither helped nor hurt how
+well the model generalises to genuinely new images.
 
 % ---------------------------------------------------------------------------
 \section*{Problem 5. Images from a new source}
 
-\fillin{Where your new images came from, and why you are sure none of them are
-among your downloads.}
+My new images came from Pinterest: I searched and saved sticker-sheet images
+by hand, picking specific pins rather than the first generic result, since
+Pinterest content is also reachable by the DuckDuckGo/Bing search that
+\texttt{collect.py} uses. I then ran \texttt{clean.py overlap} to check.
 
 \outputfile{outputs/overlap.txt}
 
-\fillin{The accuracy on your downloaded test set and on your new images, side
-by side.}
+None of the 19 new images is a near copy of any of the 830 downloaded
+images; the closest match anywhere is 0.93 similarity, below the 0.95
+near-copy threshold.
 
-\fillin{Five mistakes it was confident about, with the pictures. For each one,
-what in the image you think pushed it the wrong way.}
+Accuracy on the downloaded test set (clean model): 90.7\%. Accuracy on the 19
+new images: 47.4\% (9/19) -- much worse, as the assignment predicts.
 
-\fillin{What is different about your new images: background, lighting, angle,
-distance, what else is in the frame.}
+\textbf{Five confident mistakes:}
+
+\sidebyside{figures/mistake1_pixel_as_ink.png}{really pixel art; said hand-drawn doodle (100\%)}
+           {figures/mistake2_ink_as_vector.png}{really hand-drawn; said vector (100\%)}
+
+\sidebyside{figures/mistake3_ink_as_vector.png}{really hand-drawn; said vector (100\%)}
+           {figures/mistake4_ink_as_vector.png}{really hand-drawn; said vector (99\%)}
+
+\begin{center}\picturefile[0.4\linewidth]{figures/mistake5_pixel_as_vector.png}\end{center}
+really pixel art; said vector (95\%)
+
+For the pixel-art image called hand-drawn (top left): it is monochrome,
+black-outline-only pixel icons with no colour fill at all, so it visually
+reads as a black-and-white line drawing, and I think the model used the lack
+of colour rather than noticing the pixel grid. For the three hand-drawn
+images called vector: all three have thin, faint outlines (one is almost
+pure colour-pencil shading with barely a line at all) -- exactly the kind of
+image Problem 7 tests below. For the pixel-art sheet called vector: it uses
+soft pastel colours, a smooth gradient background and a clean white sticker
+border, which is closer to the soft, clean presentation of our vector
+stickers than to the flat, saturated colours of most of the pixel-art
+training images.
+
+What is different about my new images: they are full product photographs or
+Pinterest pin images rather than isolated sticker cut-outs on a plain
+background -- they include borders, packaging text, soft gradient
+backgrounds, and sometimes a hand holding the sticker, none of which appear
+much in the search-engine downloads.
 
 % ---------------------------------------------------------------------------
 \section*{Problem 6. The demo}
 
-Address: \fillin{your GitHub Pages address}
+Address: \url{https://jzadoo.github.io/mas1004-assignment1/}
 
-\fillin{What happens when you show it something that is none of your
-categories.}
+When I fed the model a 300\,$\times$\,300 image of pure random colour noise
+(nothing like any of the three styles), it still had to pick one of the three
+answers: Pixel Art 51\%, Hand-drawn Doodle 45\%, Vector Illustration 4\%. The
+model has no "none of the above" option, so on something that is none of its
+categories it just guesses, roughly split between the two "busy, high-detail"
+categories and almost never the "smooth, flat" vector category.
 
 % ---------------------------------------------------------------------------
 \section*{Problem 7. What the model looks at}
 
-% Copy this subsection once for every guess.
 \subsection*{Guess 1}
 
-\fillin{The guess, and what in your images or your model's mistakes made you
-think of it.}
+Looking at \texttt{results/clean\_worst.png} and the new-image mistakes above,
+hand-drawn doodles kept being called vector, and the ones I checked by eye
+all had thin, faint outlines. My guess: the model tells hand-drawn doodles
+apart from vector illustration mainly by how thick/visible the outline is,
+not by how irregular or "hand-drawn" the line looks -- a thin but shaky line
+might still read as vector if the model simply cannot resolve it at
+224$\times$224.
 
-\fillin{The change you chose, and why it tests the guess.}
+I chose to thicken the outlines, because if the model is missing thin lines
+rather than reading their shakiness, making them thicker (without making them
+any smoother or more regular) should fix the mistake even though the guess
+about shakiness is unrelated to thickness.
 
 My request to the agent, word for word:
 \begin{quote}
-\fillin{the request}
+"선을 두껍게 하는 거" (make the outlines thicker) -- applied as a MinFilter
+(size 5) on every image in \texttt{data/new\_images/ink\_drawing\_doodle\_sticker},
+saved into \texttt{data/changed/ink\_drawing\_doodle\_sticker\_thick\_lines}.
 \end{quote}
 
-% One \sidebyside for every image you changed.
-\sidebyside{figures/guess1_original_1.jpg}{\fillin{original: the model's answer}}
-           {figures/guess1_changed_1.jpg}{\fillin{changed: the model's answer}}
+\sidebyside{figures/guess1_original_001.png}{original: vector (wrong)}
+           {figures/guess2_changed_001.png}{thick lines: hand-drawn (correct)}
 
-\fillin{What the results say about the guess.}
+\sidebyside{figures/guess1_original_004.png}{original: vector (wrong)}
+           {figures/guess2_changed_004.png}{thick lines: hand-drawn (correct)}
+
+\sidebyside{figures/guess1_original_006.png}{original: vector (wrong)}
+           {figures/guess2_changed_006.png}{thick lines: vector (still wrong)}
+
+Across all 8 new hand-drawn images, accuracy went from 2/8 (25\%) on the
+originals to 7/8 (87.5\%) after thickening the outlines -- a large jump.
+Image 006 is the one exception: looking at it directly, it is almost pure
+colour-pencil shading with barely any ink outline to thicken in the first
+place, which fits the guess rather than contradicting it (there was no thin
+line there -- there was close to no line at all).
+
+\subsection*{Guess 2}
+
+Before settling on thickening, I first tested blurring the same 8 images,
+expecting that removing fine line detail would make hand-drawn doodles look
+smoother and more vector-like.
+
+My request to the agent, word for word:
+\begin{quote}
+"블러일까?" (would blur do it?) -- applied as a Gaussian blur (radius 4px) on
+every image in \texttt{data/new\_images/ink\_drawing\_doodle\_sticker}, saved
+into \texttt{data/changed/ink\_drawing\_doodle\_sticker\_blurred}.
+\end{quote}
+
+\sidebyside{figures/guess1_original_004.png}{original: vector (wrong)}
+           {figures/guess1_changed_004.png}{blurred: pixel art (wrong, different way)}
+
+\sidebyside{figures/guess1_original_002.png}{original: vector (wrong)}
+           {figures/guess1_changed_002.png}{blurred: hand-drawn (correct)}
+
+Blurring barely changed overall accuracy (2/8 to 3/8), but it changed
+\emph{which} mistake the model made: every image that was originally called
+vector and stayed wrong was now called pixel art instead, not vector. My
+reading is that blur does not make a doodle's lines look smooth and
+vector-like -- it turns them into soft, grainy colour blobs, which the model
+associates more with pixel art's busy small shapes than with vector's large
+flat regions. This guess, on its own, does not explain the mistakes as
+cleanly as Guess 1 does, which is why I moved on to thickening the lines
+instead.
 
 \subsection*{What I now think the model uses}
-\fillin{What you now think the model uses to tell your categories apart, and
-how sure you are.}
+I am fairly confident, based on the 25\%\,$\to$\,87.5\% jump from thickening
+alone, that outline strength/visibility is the main thing separating
+hand-drawn doodle from vector illustration for this model -- not line
+regularity, which was my original guess before training. Pixel art is told
+apart from the other two by its grid texture most of the time, but the one
+pixel-art mistake above shows that a monochrome, outline-only pixel sheet can
+still be read as hand-drawn when there is no colour fill to anchor it as
+pixel art.
 
 % ---------------------------------------------------------------------------
 \section*{Appendix. Output of check.py}

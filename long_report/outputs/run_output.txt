@@ -1,0 +1,30 @@
+reading /Users/seoin/Desktop/Data&AI/assignment1/data/clean
+450 images, 3 classes, read in 5 s
+  cute_pixel_art_sticker_design 150
+  ink_drawing_doodle_sticker 150
+  kawaii_sticker_vector_sheet 150
+training on 360, testing on 90
+model has 11,178,051 parameters, 11,178,051 of them will be trained
+epoch 1/10  train_loss 0.7566  train_acc 0.675  test_loss 0.3342  test_acc 0.900
+epoch 2/10  train_loss 0.1230  train_acc 0.964  test_loss 0.1792  test_acc 0.944
+epoch 3/10  train_loss 0.0488  train_acc 0.992  test_loss 0.1510  test_acc 0.944
+epoch 4/10  train_loss 0.0359  train_acc 0.997  test_loss 0.1817  test_acc 0.944
+epoch 5/10  train_loss 0.0112  train_acc 1.000  test_loss 0.1933  test_acc 0.933
+epoch 6/10  train_loss 0.0166  train_acc 0.997  test_loss 0.2071  test_acc 0.933
+epoch 7/10  train_loss 0.0169  train_acc 0.997  test_loss 0.2954  test_acc 0.878
+epoch 8/10  train_loss 0.0142  train_acc 1.000  test_loss 0.2031  test_acc 0.944
+epoch 9/10  train_loss 0.0149  train_acc 0.997  test_loss 0.2161  test_acc 0.944
+epoch 10/10  train_loss 0.0160  train_acc 0.994  test_loss 0.2591  test_acc 0.933
+
+trained in 3.7 minutes
+train accuracy 99.4%
+test  accuracy 93.3%
+wrote /Users/seoin/Desktop/Data&AI/assignment1/results/run_curves.png
+wrote /Users/seoin/Desktop/Data&AI/assignment1/results/run_confusion.png
+wrote /Users/seoin/Desktop/Data&AI/assignment1/results/run_worst.png
+wrote /Users/seoin/Desktop/Data&AI/assignment1/results/run_model.pt
+
+One line for your experiment table:
+| run | ImageNet | all layers | 10 | 0.0001 | 11,178,051 | 99.4% | 93.3% |
+
+To put this model on your web page: python src/export_web.py --tag run

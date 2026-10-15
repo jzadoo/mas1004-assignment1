@@ -1,0 +1,33 @@
+MAS1004 Assignment 1, checking your work
+
+Training images  (/Users/seoin/Desktop/Data&AI/assignment1/data/clean)
+----------------------------------------------------------------------
+  cute_pixel_art_sticker_design   122 images
+  ink_drawing_doodle_sticker     118 images
+  kawaii_sticker_vector_sheet    133 images
+
+Your images from a new source  (/Users/seoin/Desktop/Data&AI/assignment1/data/new_images)
+-----------------------------------------------------------------------------------------
+  cute_pixel_art_sticker_design     6 images
+  ink_drawing_doodle_sticker       8 images
+  kawaii_sticker_vector_sheet      5 images
+
+The same image appearing twice
+------------------------------
+  ok       no file appears twice byte for byte. Near copies (the same picture resized or re-saved) are only found by `python src/clean.py suspects` and `python src/clean.py overlap`.
+
+The model you exported for the web page
+---------------------------------------
+  PROBLEM  docs/ is missing model.onnx, model.json, selftest.json. Run src/run.py and then src/export_web.py first.
+
+Your saved runs on your new images  (/Users/seoin/Desktop/Data&AI/assignment1/data/new_images)
+----------------------------------------------------------------------------------------------
+  run               test accuracy   new images
+  run                       93.3%        47.4%   (9/19)
+  clean                     90.7%        47.4%   (9/19)
+
+Summary
+-------
+  1 thing(s) to fix:
+    - docs/ is missing model.onnx, model.json, selftest.json. Run src/run.py and then src/export_web.py first.
+

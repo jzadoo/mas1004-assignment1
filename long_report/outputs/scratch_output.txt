@@ -1,0 +1,30 @@
+reading /Users/seoin/Desktop/Data&AI/assignment1/data/clean
+450 images, 3 classes, read in 5 s
+  cute_pixel_art_sticker_design 150
+  ink_drawing_doodle_sticker 150
+  kawaii_sticker_vector_sheet 150
+training on 360, testing on 90
+model has 11,178,051 parameters, 11,178,051 of them will be trained
+epoch 1/10  train_loss 0.9326  train_acc 0.550  test_loss 1.0392  test_acc 0.511
+epoch 2/10  train_loss 0.6327  train_acc 0.789  test_loss 0.7564  test_acc 0.667
+epoch 3/10  train_loss 0.4207  train_acc 0.839  test_loss 0.9286  test_acc 0.589
+epoch 4/10  train_loss 0.2712  train_acc 0.922  test_loss 0.8933  test_acc 0.644
+epoch 5/10  train_loss 0.1813  train_acc 0.964  test_loss 0.5885  test_acc 0.722
+epoch 6/10  train_loss 0.0901  train_acc 0.978  test_loss 0.7737  test_acc 0.767
+epoch 7/10  train_loss 0.0573  train_acc 0.986  test_loss 0.9072  test_acc 0.778
+epoch 8/10  train_loss 0.0529  train_acc 0.986  test_loss 0.6866  test_acc 0.767
+epoch 9/10  train_loss 0.0406  train_acc 0.992  test_loss 0.8215  test_acc 0.744
+epoch 10/10  train_loss 0.0299  train_acc 0.997  test_loss 0.7979  test_acc 0.744
+
+trained in 3.4 minutes
+train accuracy 100.0%
+test  accuracy 74.4%
+wrote /Users/seoin/Desktop/Data&AI/assignment1/results/scratch_curves.png
+wrote /Users/seoin/Desktop/Data&AI/assignment1/results/scratch_confusion.png
+wrote /Users/seoin/Desktop/Data&AI/assignment1/results/scratch_worst.png
+wrote /Users/seoin/Desktop/Data&AI/assignment1/results/scratch_model.pt
+
+One line for your experiment table:
+| scratch | random | all layers | 10 | 0.0001 | 11,178,051 | 100.0% | 74.4% |
+
+To put this model on your web page: python src/export_web.py --tag scratch

@@ -1,0 +1,30 @@
+reading /Users/seoin/Desktop/Data&AI/assignment1/data/clean
+450 images, 3 classes, read in 5 s
+  cute_pixel_art_sticker_design 150
+  ink_drawing_doodle_sticker 150
+  kawaii_sticker_vector_sheet 150
+training on 360, testing on 90
+model has 11,178,051 parameters, 1,539 of them will be trained
+epoch 1/10  train_loss 1.0866  train_acc 0.444  test_loss 0.9761  test_acc 0.489
+epoch 2/10  train_loss 0.8293  train_acc 0.669  test_loss 0.7628  test_acc 0.711
+epoch 3/10  train_loss 0.6668  train_acc 0.772  test_loss 0.6319  test_acc 0.800
+epoch 4/10  train_loss 0.6018  train_acc 0.806  test_loss 0.5682  test_acc 0.811
+epoch 5/10  train_loss 0.5285  train_acc 0.836  test_loss 0.5037  test_acc 0.833
+epoch 6/10  train_loss 0.4956  train_acc 0.825  test_loss 0.4815  test_acc 0.856
+epoch 7/10  train_loss 0.4730  train_acc 0.847  test_loss 0.4466  test_acc 0.856
+epoch 8/10  train_loss 0.4200  train_acc 0.875  test_loss 0.4154  test_acc 0.878
+epoch 9/10  train_loss 0.4073  train_acc 0.881  test_loss 0.4222  test_acc 0.856
+epoch 10/10  train_loss 0.3762  train_acc 0.903  test_loss 0.3736  test_acc 0.900
+
+trained in 1.7 minutes
+train accuracy 91.7%
+test  accuracy 90.0%
+wrote /Users/seoin/Desktop/Data&AI/assignment1/results/frozen_curves.png
+wrote /Users/seoin/Desktop/Data&AI/assignment1/results/frozen_confusion.png
+wrote /Users/seoin/Desktop/Data&AI/assignment1/results/frozen_worst.png
+wrote /Users/seoin/Desktop/Data&AI/assignment1/results/frozen_model.pt
+
+One line for your experiment table:
+| frozen | ImageNet | last layer | 10 | 0.001 | 1,539 | 91.7% | 90.0% |
+
+To put this model on your web page: python src/export_web.py --tag frozen

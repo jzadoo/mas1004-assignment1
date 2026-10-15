@@ -1,0 +1,25 @@
+reading /Users/seoin/Desktop/Data&AI/assignment1/data/clean
+450 images, 3 classes, read in 5 s
+  cute_pixel_art_sticker_design 150
+  ink_drawing_doodle_sticker 150
+  kawaii_sticker_vector_sheet 150
+training on 360, testing on 90
+model has 11,178,051 parameters, 11,178,051 of them will be trained
+epoch 1/5  train_loss 0.7035  train_acc 0.681  test_loss 0.3106  test_acc 0.889
+epoch 2/5  train_loss 0.1479  train_acc 0.956  test_loss 0.1518  test_acc 0.933
+epoch 3/5  train_loss 0.0487  train_acc 0.994  test_loss 0.1559  test_acc 0.944
+epoch 4/5  train_loss 0.0237  train_acc 1.000  test_loss 0.1648  test_acc 0.922
+epoch 5/5  train_loss 0.0158  train_acc 0.997  test_loss 0.1539  test_acc 0.944
+
+trained in 1.7 minutes
+train accuracy 100.0%
+test  accuracy 94.4%
+wrote /Users/seoin/Desktop/Data&AI/assignment1/results/short_curves.png
+wrote /Users/seoin/Desktop/Data&AI/assignment1/results/short_confusion.png
+wrote /Users/seoin/Desktop/Data&AI/assignment1/results/short_worst.png
+wrote /Users/seoin/Desktop/Data&AI/assignment1/results/short_model.pt
+
+One line for your experiment table:
+| short | ImageNet | all layers | 5 | 0.0001 | 11,178,051 | 100.0% | 94.4% |
+
+To put this model on your web page: python src/export_web.py --tag short

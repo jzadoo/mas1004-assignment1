@@ -1,0 +1,13 @@
+class                    downloaded  removed   kept  other
+cute_pixel_art_sticker_design        150       28    122      0
+ink_drawing_doodle_sticker        150       32    118      0
+kawaii_sticker_vector_sheet        150       17    133      0
+
+reasons
+    55  near-duplicate, kept one of each matching pair
+    11  real-life photo of the sticker, not the illustration itself
+     9  ad/product-listing graphic (banner text, price tag, watermark), not the sticker itself
+     1  abstract digital art, not a sticker illustration
+     1  black-and-white line doodle style, matches hand-drawn category not vector
+
+"other" is images that are in data/raw but neither in data/clean nor removed with `clean.py remove`, for example ones you deleted by hand. Their reasons are not recorded.

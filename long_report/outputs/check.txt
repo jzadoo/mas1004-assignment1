@@ -1,0 +1,53 @@
+MAS1004 Assignment 1, checking your work
+
+Training images  (/Users/seoin/Desktop/Data&AI/assignment1/data/clean)
+----------------------------------------------------------------------
+  cute_pixel_art_sticker_design   122 images
+  ink_drawing_doodle_sticker     118 images
+  kawaii_sticker_vector_sheet    133 images
+
+Your images from a new source  (/Users/seoin/Desktop/Data&AI/assignment1/data/new_images)
+-----------------------------------------------------------------------------------------
+  cute_pixel_art_sticker_design     6 images
+  ink_drawing_doodle_sticker       8 images
+  kawaii_sticker_vector_sheet      5 images
+
+The same image appearing twice
+------------------------------
+  ok       no file appears twice byte for byte. Near copies (the same picture resized or re-saved) are only found by `python src/clean.py suspects` and `python src/clean.py overlap`.
+
+The model you exported for the web page
+---------------------------------------
+  ok       3 classes: cute_pixel_art_sticker_design, ink_drawing_doodle_sticker, kawaii_sticker_vector_sheet
+  ok       model.onnx is 44.8 MB, 11,178,051 parameters
+           input [1, 3, 224, 224], prepared as: shorter side 256, centre 224 x 224, mean [0.485, 0.456, 0.406], std [0.229, 0.224, 0.225]
+  warning  docs/model.onnx is not committed. Your published page will not have a model until you commit and push it.
+
+Does the exported model give the answers Python gave?
+-----------------------------------------------------
+  ok       yes, they agree (largest gap 0.0000)
+
+Your images from a new source  (/Users/seoin/Desktop/Data&AI/assignment1/data/new_images)
+-----------------------------------------------------------------------------------------
+
+  accuracy on your new images: 9/19 = 47.4%
+
+  rows are what it really is, columns are what the model said
+                                    cute_pix ink_draw kawaii_s
+    cute_pixel_art_sticker_design          4        1        1
+    ink_drawing_doodle_sticker             0        2        6
+    kawaii_sticker_vector_sheet            1        1        3
+
+  the mistakes it was most sure about:
+    006.png                      said ink_drawing_doodle_sticker (100%), really cute_pixel_art_sticker_design
+    001.png                      said kawaii_sticker_vector_sheet (100%), really ink_drawing_doodle_sticker
+    006.png                      said kawaii_sticker_vector_sheet (100%), really ink_drawing_doodle_sticker
+    008.png                      said kawaii_sticker_vector_sheet (99%), really ink_drawing_doodle_sticker
+    003.png                      said kawaii_sticker_vector_sheet (95%), really cute_pixel_art_sticker_design
+
+Summary
+-------
+  nothing is broken
+  1 thing(s) worth a sentence in your report:
+    - docs/model.onnx is not committed. Your published page will not have a model until you commit and push it.
+
