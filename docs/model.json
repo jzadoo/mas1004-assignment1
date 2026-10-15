@@ -1,9 +1,9 @@
 {
   "format": "mas1004-onnx-v1",
   "labels": [
-    "cute_pixel_art_sticker_design",
-    "ink_drawing_doodle_sticker",
-    "kawaii_sticker_vector_sheet"
+    "Pixel Art",
+    "Hand-drawn Doodle",
+    "Vector Illustration"
   ],
   "input": {
     "name": "image",

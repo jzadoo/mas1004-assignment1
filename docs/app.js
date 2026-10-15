@@ -363,8 +363,8 @@ async function start() {
       executionProviders: ["wasm"],
     });
 
-    document.title = model.labels.join(" / ");
-    $("title").textContent = model.labels.join("  ·  ");
+    document.title = "Sticker Style Classifier";
+    $("title").textContent = "Sticker Style Classifier";
     $("subtitle").textContent =
       `${model.labels.length} classes, ResNet18 on ` +
       `${model.input.crop}x${model.input.crop} colour input, ` +
