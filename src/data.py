@@ -7,7 +7,11 @@ that the model can eat.
 Run `pytest tests/test_data.py` after you fill them in.
 """
 
+from pathlib import Path
+
 import numpy as np
+from PIL import Image
+from torchvision import transforms
 
 # Files with any other extension should be ignored.
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
@@ -50,7 +54,13 @@ def prepare_image(image):
     The web page does these same six steps in JavaScript. If your version is
     different, the self test badge at the top of your page turns red.
     """
-    raise NotImplementedError("Problem 2: fill in prepare_image")
+    pipeline = transforms.Compose([
+        transforms.Resize(RESIZE),
+        transforms.CenterCrop(CROP),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=MEAN, std=STD),
+    ])
+    return pipeline(image.convert("RGB")).numpy().astype(np.float32)
 
 
 def load_folder(root):
@@ -83,7 +93,32 @@ def load_folder(root):
     Memory: every image becomes 3 x 224 x 224 numbers of 4 bytes, about 0.6 MB.
     750 images is about 450 MB. That fits on Colab and on most laptops.
     """
-    raise NotImplementedError("Problem 2: fill in load_folder")
+    root = Path(root)
+    class_names = sorted(p.name for p in root.iterdir() if p.is_dir())
+
+    X, y, paths = [], [], []
+    for label, name in enumerate(class_names):
+        files = sorted(
+            p for p in (root / name).iterdir()
+            if p.is_file() and p.suffix.lower() in IMAGE_SUFFIXES
+        )
+        for path in files:
+            try:
+                with Image.open(path) as image:
+                    image.load()
+                    prepared = prepare_image(image)
+            except Exception:
+                continue
+            X.append(prepared)
+            y.append(label)
+            paths.append(path)
+
+    if X:
+        X = np.stack(X).astype(np.float32)
+    else:
+        X = np.zeros((0, 3, CROP, CROP), dtype=np.float32)
+    y = np.array(y, dtype=np.int64)
+    return X, y, class_names, paths
 
 
 def split_train_test(X, y, paths, test_ratio=0.2, seed=0):
@@ -102,4 +137,22 @@ def split_train_test(X, y, paths, test_ratio=0.2, seed=0):
         up with a class that has no test images at all, and then your accuracy
         number means nothing.
     """
-    raise NotImplementedError("Problem 2: fill in split_train_test")
+    rng = np.random.default_rng(seed)
+    train_idx, test_idx = [], []
+    for label in np.unique(y):
+        idx = np.where(y == label)[0]
+        idx = idx[rng.permutation(len(idx))]
+        n_test = max(1, round(len(idx) * test_ratio))
+        n_test = min(n_test, len(idx) - 1)
+        test_idx.extend(idx[:n_test])
+        train_idx.extend(idx[n_test:])
+
+    train_idx = np.array(sorted(train_idx))
+    test_idx = np.array(sorted(test_idx))
+
+    def take(idx):
+        return X[idx], y[idx], [paths[i] for i in idx]
+
+    X_train, y_train, paths_train = take(train_idx)
+    X_test, y_test, paths_test = take(test_idx)
+    return X_train, y_train, paths_train, X_test, y_test, paths_test

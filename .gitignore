@@ -9,6 +9,8 @@ results/
 .venv/
 __pycache__/
 .pytest_cache/
+.DS_Store
+.claude/
 
 # Do NOT add docs/ here. GitHub Pages serves that folder, so your trained
 # model has to be committed and pushed like everything else.
